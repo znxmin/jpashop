@@ -106,4 +106,19 @@ public class OrderRepository {
                 " join fetch o.delivery d", Order.class
         ).getResultList();
     }
+
+    public List<Order> findAllWithItem() {
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d" +
+                        " join fetch o.orderItems oi" +
+                        " join fetch oi.item i", Order.class
+        ).getResultList();
+        // hibernate 6 이후부터는 distinct 사용하지 않아도
+        // 페치 조인시 자동으로 중복을 제거하도록 구현되어있음
+        // distinct 기능 2가지
+        // 1. DB에 DISTINCT 키워드 날려줌
+        // 2. 루트(Order) 엔티티의 중복되는 결과 제거 후 컬렉션에 담아 리턴
+    }
 }
