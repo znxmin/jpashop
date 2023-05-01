@@ -121,4 +121,16 @@ public class OrderRepository {
         // 1. DB에 DISTINCT 키워드 날려줌
         // 2. 루트(Order) 엔티티의 중복되는 결과 제거 후 컬렉션에 담아 리턴
     }
+
+    public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        return em.createQuery("select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class
+                ).setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+        // @~ToOne인 연관관계는 모두 페치조인으로 조회
+        // 컬렉션은 지연로딩으로 조회하고
+        // 지연 로딩 성능 최적화를 위해 hibernate의 default_batch_fetch_size 옴션 적용
+    }
 }
